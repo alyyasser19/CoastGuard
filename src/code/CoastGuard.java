@@ -213,53 +213,52 @@ public class CoastGuard extends Search {
   }
 
   private static String breadthFirst(Grid grid, boolean visualize) {
-    // //Set Initial Strings
-    // Search searchProblem = new CoastGuard();
+    //Set Initial Strings
+    Search searchProblem = new CoastGuard();
 
-    // Grid currentGrid = grid;
+    Grid currentGrid = grid;
 
-    // //set Root State
-    // State rootState = new State(
-    //   currentGrid,
-    //   null,
-    //   new ArrayList<String>(),
-    //   "Init State",
-    //   currentGrid.getCgX(),
-    //   currentGrid.getCgY(),
-    //   0,
-    //   0,
-    //   0,
-    //   0,
-    //   0,
-    //   0
-    // );
-    // searchProblem.setInitState(rootState);
-    // searchProblem.getQueue().add(rootState);
-    // searchProblem.getStateSpace().add(rootState);
-    // //Set Initial State
-    // State currentState = rootState;
-    // while (!currentGrid.checkGameOver()) {
-    //   currentState = searchProblem.getQueue().remove(0);
-    //   ArrayList<String> actions = grid.getPossibleActions();
-    //   for (String action : actions) {
-    //     State nextState = searchProblem.expand(currentState, action);
-    //     currentState = nextState;
-    //     searchProblem.getQueue().add(nextState);
-    //     searchProblem.getStateSpace().add(nextState);
-    //     System.out.println("Add to queue:");
-    //     //nextState.printStateInfo();
-    //     if (currentGrid.checkGameOver()) {
-    //       break;
-    //     }
-    //   }
-    //   currentGrid = currentState.getGrid();
-    // }
+    //set Root State
+    State rootState = new State(
+      currentGrid,
+      null,
+      new ArrayList<String>(),
+      "Init State",
+      currentGrid.getCgX(),
+      currentGrid.getCgY(),
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    );
+    searchProblem.setInitState(rootState);
+    searchProblem.getQueue().add(rootState);
+    searchProblem.getStateSpace().add(rootState);
+    //Set Initial State
+    State currentState = rootState;
+    while (!currentGrid.checkGameOver()) {
+      currentState = searchProblem.getQueue().remove(0);
+      ArrayList<String> actions = grid.getPossibleActions();
+      for (String action : actions) {
+        State nextState = searchProblem.expand(currentState, action);
+        currentState = nextState;
+        searchProblem.getQueue().add(nextState);
+        searchProblem.getStateSpace().add(nextState);
+        System.out.println("Add to queue:");
+        //nextState.printStateInfo();
+        if (currentGrid.checkGameOver()) {
+          break;
+        }
+      }
+      currentGrid = currentState.getGrid();
+    }
 
-    // String solution = stringifyState(currentState);
-    // if (visualize) {
-    //   System.out.println("Solution: " + solution);
-    // }
-    // return solution;
-    return null;
+    String solution = stringifyState(currentState);
+    if (visualize) {
+      System.out.println("Solution: " + solution);
+    }
+    return solution;
   }
 }
