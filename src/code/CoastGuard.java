@@ -19,7 +19,7 @@ public class CoastGuard extends Search {
 
   public static String solve(String grid, String strategy, boolean visualize) {
     Grid gridObj = Grid.decodeString(grid);
-    if (strategy.equals("BS")) {
+    if (strategy.equals("BF")) {
       return breadthFirst(gridObj, visualize);
     } else if (strategy.equals("DF")) {
       return depthFirst(gridObj, visualize);
@@ -157,20 +157,11 @@ public class CoastGuard extends Search {
     return null;
   }
 
-  private static String breadthFirst(Grid grid, boolean visualize) {
-    return null;
-  }
-
   private static String depthFirst(Grid grid, boolean visualize) {
     //Set Initial Strings
     Search searchProblem = new CoastGuard();
-    String plan = "";
-    int deaths = 0;
-    int retrieved = 0;
-    int nodes = 0;
+
     Grid currentGrid = grid;
-    //Set Initial Grid
-    String[][] gridArray = grid.getGrid();
 
     //set Root State
     State rootState = new State(
@@ -192,7 +183,7 @@ public class CoastGuard extends Search {
     searchProblem.getStateSpace().add(rootState);
     //Set Initial State
     State currentState = rootState;
-    while (!grid.checkGameOver()) {
+    while (!currentGrid.checkGameOver()) {
       ArrayList<String> actions = grid.getPossibleActions();
       String nextOperator = actions.get(0);
       //if the top action is a move, then randomly choose a move
@@ -206,7 +197,12 @@ public class CoastGuard extends Search {
       }
       State nextState = searchProblem.expand(currentState, nextOperator);
       currentState = nextState;
-      nodes++;
+      currentGrid = currentState.getGrid();
+      searchProblem.getQueue().add(currentState);
+      searchProblem.getStateSpace().add(currentState);
+      if (visualize) {
+        System.out.println(currentGrid.generateGridString());
+      }
     }
 
     String solution = stringifyState(currentState);
@@ -214,5 +210,56 @@ public class CoastGuard extends Search {
       System.out.println("Solution: " + solution);
     }
     return solution;
+  }
+
+  private static String breadthFirst(Grid grid, boolean visualize) {
+    // //Set Initial Strings
+    // Search searchProblem = new CoastGuard();
+
+    // Grid currentGrid = grid;
+
+    // //set Root State
+    // State rootState = new State(
+    //   currentGrid,
+    //   null,
+    //   new ArrayList<String>(),
+    //   "Init State",
+    //   currentGrid.getCgX(),
+    //   currentGrid.getCgY(),
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0
+    // );
+    // searchProblem.setInitState(rootState);
+    // searchProblem.getQueue().add(rootState);
+    // searchProblem.getStateSpace().add(rootState);
+    // //Set Initial State
+    // State currentState = rootState;
+    // while (!currentGrid.checkGameOver()) {
+    //   currentState = searchProblem.getQueue().remove(0);
+    //   ArrayList<String> actions = grid.getPossibleActions();
+    //   for (String action : actions) {
+    //     State nextState = searchProblem.expand(currentState, action);
+    //     currentState = nextState;
+    //     searchProblem.getQueue().add(nextState);
+    //     searchProblem.getStateSpace().add(nextState);
+    //     System.out.println("Add to queue:");
+    //     //nextState.printStateInfo();
+    //     if (currentGrid.checkGameOver()) {
+    //       break;
+    //     }
+    //   }
+    //   currentGrid = currentState.getGrid();
+    // }
+
+    // String solution = stringifyState(currentState);
+    // if (visualize) {
+    //   System.out.println("Solution: " + solution);
+    // }
+    // return solution;
+    return null;
   }
 }

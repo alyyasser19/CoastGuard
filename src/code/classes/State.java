@@ -137,5 +137,14 @@ public class State {
         System.out.println("Collected Boxes: " + this.collectedBoxes);
         System.out.println("Deaths: " + this.deaths);
         System.out.println("Number Nodes Expanded: " + this.numberNodesExpanded);
+        grid.printGrid();
     }
+
+    
+    // public String toString() {
+    //     return "State [grid=" + grid + ", parent=" + parent + ", plan=" + plan + ", operator=" + operator + ", cgX=" + cgX
+    //             + ", cgY=" + cgY + ", pathCost=" + pathCost + ", depth=" + depth + ", savedPassengers=" + savedPassengers
+    //             + ", collectedBoxes=" + collectedBoxes + ", deaths=" + deaths + ", numberNodesExpanded="
+    //             + numberNodesExpanded + "]";
+    // }
 }

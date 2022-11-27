@@ -393,7 +393,7 @@ public class Grid {
   public ArrayList<String> getPossibleActions() {
     ArrayList<String> actions = new ArrayList<String>();
     for (int i = 0; i < s.size(); i++) {
-      if (s.get(i).getX() == cgX && s.get(i).getY() == cgY) {
+      if (s.get(i).getX() == cgX && s.get(i).getY() == cgY) { // add capacity check
         if (
           s.get(i).getRemainingPassengers() > 0 &&
           C > 0 &&
