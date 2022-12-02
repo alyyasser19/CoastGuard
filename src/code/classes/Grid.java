@@ -13,11 +13,32 @@ public class Grid {
   private int[][] i; //stations coordinates
   private ArrayList<Ship> s = new ArrayList<Ship>(); //ships coordinates
   private boolean gameOver = false;
+  private int deaths = 0;
+
+  private int savedPassengers = 0;
+
+  private int collectedBoxes = 0;
 
   public Grid(int m, int n) {
     M = m;
     N = n;
     this.grid = new String[N][M];
+  }
+
+  public Grid(String[][] grid, int m, int n, int maxC, int c, int cgX, int cgY, int[][] i, ArrayList<Ship> s, boolean gameOver, int deaths, int savedPassengers, int collectedBoxes) {
+    this.grid = grid;
+    M = m;
+    N = n;
+    this.maxC = maxC;
+    C = c;
+    this.cgX = cgX;
+    this.cgY = cgY;
+    this.i = i;
+    this.s = s;
+    this.gameOver = gameOver;
+    this.deaths = deaths;
+    this.savedPassengers = savedPassengers;
+    this.collectedBoxes = collectedBoxes;
   }
 
   public String[][] getGrid() {
@@ -104,7 +125,11 @@ public class Grid {
   public void printGrid() {
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < M; j++) {
-        System.out.print(grid[i][j] + " ");
+        if(cgX == j && cgY == i)
+         System.out.print(grid[i][j]
+                +"/ AGENT"+ " ");
+        else
+         System.out.print(grid[i][j] + " ");
       }
       System.out.println();
     }
@@ -321,19 +346,25 @@ public class Grid {
     }
   }
 
-  public int dropOffPassengers() {
+  public void dropOffPassengers() {
     if (grid[cgY][cgX] == "Station") {
       int savedPassengers = maxC - C;
       C = maxC;
 
       System.out.println("Dropped off " + savedPassengers + " passengers");
-
-      return savedPassengers;
+      this.savedPassengers += savedPassengers;
     }
-    return 0;
   }
 
-  public int damageShips() {
+  public int getDeaths() {
+    return deaths;
+  }
+
+  public void setDeaths(int deaths) {
+    this.deaths = deaths;
+  }
+
+  public void damageShips() {
     int deaths = 0;
     for (int i = 0; i < s.size(); i++) {
       if (!s.get(i).isWrecked() && s.get(i).getRemainingPassengers() > 0) {
@@ -358,28 +389,30 @@ public class Grid {
       }
       if (s.get(i).isWrecked() && !s.get(i).isDestroyed()) {
         s.get(i).damageBox();
+        System.out.println("Ship " + i + " has Box Damage " + s.get(i).getBoxDamage() + " damage");
         if (s.get(i).getBoxDamage() == 20) {
           grid[s.get(i).getY()][s.get(i).getX()] = "Destroyed";
           s.remove(i);
           System.out.println("Ship " + i + " has been destroyed");
+          i--;
         }
       }
     }
-    return deaths;
+    System.out.println("Deaths: " + deaths);
+    this.deaths +=deaths;
   }
 
-  public int retrieveBox() {
+  public void retrieveBox() {
     for (int i = 0; i < s.size(); i++) {
       if (s.get(i).getX() == cgX && s.get(i).getY() == cgY) {
         if (s.get(i).isWrecked() && !s.get(i).isDestroyed()) {
           System.out.println("Retrieved box");
           grid[s.get(i).getY()][s.get(i).getX()] = "Destroyed";
           s.remove(i);
-          return 1;
+          collectedBoxes++;
         }
       }
     }
-    return 0;
   }
 
   //if all ships are destroyed, return true
@@ -388,6 +421,14 @@ public class Grid {
       return true;
     }
     return false;
+  }
+
+  public boolean isGameOver() {
+    return gameOver;
+  }
+
+  public void setGameOver(boolean gameOver) {
+    this.gameOver = gameOver;
   }
 
   public ArrayList<String> getPossibleActions() {
@@ -431,7 +472,7 @@ public class Grid {
     return actions;
   }
 
-  public int[] performAction(String action) {
+  public void performAction(String action) {
     // [0] = Deaths, [1] = saved, [2] = collected boxes;
     System.out.println("Performing action: " + action);
     int[] outcomes = new int[3];
@@ -456,14 +497,53 @@ public class Grid {
         pickUpPassengers();
         break;
       case "drop":
-        outcomes[1] = dropOffPassengers();
+        dropOffPassengers();
         break;
       case "retrieve":
-        outcomes[2] = retrieveBox();
+        retrieveBox();
         break;
     }
-    outcomes[0] = damageShips();
+    damageShips();
+  }
 
-    return outcomes;
+  public int getSavedPassengers() {
+    return savedPassengers;
+  }
+
+  public void setSavedPassengers(int savedPassengers) {
+    this.savedPassengers = savedPassengers;
+  }
+
+  public int getCollectedBoxes() {
+    return collectedBoxes;
+  }
+
+  public void setCollectedBoxes(int collectedBoxes) {
+    this.collectedBoxes = collectedBoxes;
+  }
+
+  public Grid copyGrid(){
+    ArrayList<Ship> shipsCopy = new ArrayList<Ship>();
+    for(int i = 0; i < s.size(); i++){
+      shipsCopy.add(s.get(i).copy());
+    }
+    Grid grid = new Grid(
+            this.grid,
+            this.M,
+            this.N,
+            this.maxC,
+            this.C,
+            this.cgX,
+            this.cgY,
+            this.i,
+            this.s,
+            this.gameOver,
+            this.deaths,
+            this.savedPassengers,
+            this.collectedBoxes
+    );
+
+    System.out.println("Copied Grid: "+ "Cgx: "+grid.cgX+" Cgy: "+grid.cgY +" "+ "Deaths: "+grid.deaths);
+    return grid;
   }
 }

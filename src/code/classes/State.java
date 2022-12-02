@@ -140,6 +140,41 @@ public class State {
         grid.printGrid();
     }
 
+    //copy State
+    public State copy() {
+        Grid gridCopy = grid.copyGrid();
+        State parentCopy = parent;
+        ArrayList<String> planCopy = new ArrayList<String>();
+        //copy plan
+        for (String s : plan) {
+            planCopy.add(s);
+        }
+        String operatorCopy = operator;
+        int cgXCopy = cgX;
+        int cgYCopy = cgY;
+        int pathCostCopy = pathCost;
+        int depthCopy = depth;
+        int savedPassengersCopy = savedPassengers;
+        int collectedBoxesCopy = collectedBoxes;
+        int deathsCopy = deaths;
+        int numberNodesExpandedCopy = numberNodesExpanded;
+        State stateCopy = new State(gridCopy, parentCopy, planCopy, operatorCopy, cgXCopy, cgYCopy, pathCostCopy, depthCopy,
+                savedPassengersCopy, collectedBoxesCopy, deathsCopy, numberNodesExpandedCopy);
+        return stateCopy;
+    }
+
+    public String stateID(){
+        return "Operator: " + this.operator+ " " + "cgX: " + this.cgX +" " + "cgY: " + this.cgY +" "+"depth: " + this.depth +" " +"numberNodesExpanded: " + this.numberNodesExpanded + " "+ "Plan Size: " + this.plan.size();
+    }
+
+    //Compare two states to see if they are the same based on cgx, cgy, and deaths
+    public boolean compareStates(State state){
+        if(this.cgX == state.cgX && this.cgY == state.cgY && this.deaths == state.deaths){
+            return true;
+        }
+        return false;
+    }
+
     
     // public String toString() {
     //     return "State [grid=" + grid + ", parent=" + parent + ", plan=" + plan + ", operator=" + operator + ", cgX=" + cgX

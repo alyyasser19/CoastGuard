@@ -53,7 +53,7 @@ public abstract class Search {
         this.goalState = goalState;
     }
 
-    public abstract State expand(State prevState, String action);
+    public abstract State expand(State prevState);
 
     public abstract void printPath(State node);
 

@@ -13,7 +13,7 @@ public class Ship {
     this.remainingPassengers = remainingPassengers;
     this.x = x;
     this.y = y;
-    this.boxDamage = -1;
+    this.boxDamage = 0;
     this.destroyed = false;
     this.boxRetrieved = false;
     this.wrecked = false;
@@ -106,5 +106,15 @@ public class Ship {
 
   public void retrieveBox() {
     this.boxRetrieved = true;
+  }
+
+  //copy ship
+  public Ship copy(){
+    Ship ship = new Ship(this.x, this.y, this.remainingPassengers);
+    ship.setBoxDamage(this.boxDamage);
+    ship.setBoxRetrieved(this.boxRetrieved);
+    ship.setDestroyed(this.destroyed);
+    ship.setWrecked(this.wrecked);
+    return ship;
   }
 }
