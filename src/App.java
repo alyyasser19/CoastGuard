@@ -5,7 +5,7 @@ public class App {
 
   public static void main(String[] args) throws Exception {
     String grid0 = "3,4;97;1,2;0,1;3,2,65;"; 
-   // String grid1 = "6,6;52;2,0;2,4,4,0,5,4;2,1,19,4,2,6,5,0,8;"; same as above
+    String grid1 = "6,6;52;2,0;2,4,4,0,5,4;2,1,19,4,2,6,5,0,8;";
     //String grid2 = "7,5;40;2,3;3,6;1,1,10,4,5,90;"; same as above
     //String grid3 = "8,5;60;4,6;2,7;3,4,37,3,5,93,4,0,40;";
     // String grid4 = "5,7;63;4,2;6,2,6,3;0,0,17,0,2,73,3,0,30;";
@@ -19,7 +19,7 @@ public class App {
     //         "10,6;59;1,7;0,0,2,2,3,0,5,3;1,3,69,3,4,80,4,7,94,4,9,14,5,2,39;";
       
     String solution = CoastGuard.solve(grid0, "BF", true);
-    // Grid grid = Grid.decodeString(grid9);
-    // grid.printGrid();
+    Grid grid = Grid.decodeString(grid0);
+     grid.printGrid();
   }
 }

@@ -20,23 +20,16 @@ public class CoastGuard extends Search {
 
     public static String solve(String grid, String strategy, boolean visualize) {
         Grid gridObj = Grid.decodeString(grid);
-        if (strategy.equals("BF")) {
-            return breadthFirst(gridObj, visualize);
-        } else if (strategy.equals("DF")) {
-            return depthFirst(gridObj, visualize);
-        } else if (strategy.equals("ID")) {
-            return IterativeDeepening(gridObj, visualize);
-        } else if (strategy.equals("GR1")) {
-            return greedy(gridObj, visualize, 1);
-        } else if (strategy.equals("GR2")) {
-            return greedy(gridObj, visualize, 2);
-        } else if (strategy.equals("AS1")) {
-            return AStar(gridObj, visualize, 1);
-        } else if (strategy.equals("AS2")) {
-            return AStar(gridObj, visualize, 2);
-        } else {
-            return "Invalid strategy";
-        }
+        return switch (strategy) {
+            case "BF" -> breadthFirst(gridObj, visualize);
+            case "DF" -> depthFirst(gridObj, visualize);
+            case "ID" -> IterativeDeepening(gridObj, visualize);
+            case "GR1" -> greedy(gridObj, visualize, 1);
+            case "GR2" -> greedy(gridObj, visualize, 2);
+            case "AS1" -> AStar(gridObj, visualize, 1);
+            case "AS2" -> AStar(gridObj, visualize, 2);
+            default -> "Invalid strategy";
+        };
     }
 
     @Override
@@ -82,19 +75,14 @@ public class CoastGuard extends Search {
         int cgY;
         int pathCost = prevState.getPathCost();
         int depth = prevState.getDepth();
-        int savedPassengers = prevState.getSavedPassengers();
-        int collectedBoxes = prevState.getCollectedBoxes();
-        int deaths = currentGrid.getDeaths();
         int numberNodesExpanded = prevState.getPlan().size();
 
-        System.out.println(currentGrid.getDeaths());
 
         //perform the action
         currentGrid.performAction(action);
         int newDeaths = currentGrid.getDeaths();
         int newSavedPassengers = currentGrid.getSavedPassengers();
         int newCollectedBoxes = currentGrid.getCollectedBoxes();
-        currentGrid.printGrid();
 
         //update the state
         plan.add(action);
@@ -208,7 +196,6 @@ public class CoastGuard extends Search {
         Search searchProblem = new CoastGuard();
 
         Grid currentGrid = grid;
-
         //set Root State
         State rootState = new State(
                 currentGrid,
@@ -226,19 +213,28 @@ public class CoastGuard extends Search {
         );
         searchProblem.setInitState(rootState);
         searchProblem.getStateSpace().add(rootState);
+        searchProblem.getQueue().add(rootState);
         //Set Initial State
         State currentState = rootState;
+        ArrayList<String> actions = currentGrid.getPossibleActions();
+        for (String action : actions) {
+            State temp = currentState.copy();
+            temp.setOperator(action);
+            searchProblem.getQueue().add(temp);
+            searchProblem.getStateSpace().add(temp);
+        }
+
         while(!currentGrid.checkGameOver()){
-            ArrayList<String> actions = currentGrid.getPossibleActions();
-            for(String action : actions){
-                State tempState = currentState.copy();
-                tempState.setOperator(action);
-                searchProblem.getQueue().add(tempState);
-                searchProblem.getStateSpace().add(tempState);
-            }
             currentState = searchProblem.expand(searchProblem.getQueue().remove(0));
-            System.out.println(stringifyState(currentState));
             currentGrid = currentState.getGrid();
+            actions = currentGrid.getPossibleActions();
+            for (String action : actions) {
+                State temp = currentState.copy();
+                temp.setOperator(action);
+                searchProblem.getQueue().add(temp);
+                searchProblem.getStateSpace().add(temp);
+            }
+            removeRedundantStates(searchProblem.getQueue());
         }
 
         String solution = stringifyState(currentState);
@@ -247,5 +243,29 @@ public class CoastGuard extends Search {
         }
         return solution;
 
+    }
+
+    //remove redundant states from queue from back to front
+    private static void removeRedundantStates(ArrayList<State> queue){
+        for(int i = queue.size() - 1; i >= 0; i--){
+            State state = queue.get(i);
+            for(int j = i - 1; j >= 0; j--){
+                State state2 = queue.get(j);
+                if(state.compareStates(state2)){
+                    queue.remove(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    //check if state is redundant
+    private static boolean isRedundantState(State state, ArrayList<State> queue){
+        for(State state2 : queue){
+            if(state.compareStates(state2)){
+                return true;
+            }
+        }
+        return false;
     }
 }

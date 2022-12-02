@@ -291,7 +291,7 @@ public class Grid {
       int y = Integer.parseInt(ships[j]);
       int p = Integer.parseInt(ships[j + 2]);
       Ship ship = new Ship(x, y, p);
-      g.getGrid()[y][x] = "Ship";
+      g.getGrid()[y][x] = "Ship" + "(" + p + ")";
       g.getS().add(ship);
     }
     return g;
@@ -398,7 +398,6 @@ public class Grid {
         }
       }
     }
-    System.out.println("Deaths: " + deaths);
     this.deaths +=deaths;
   }
 
@@ -473,13 +472,7 @@ public class Grid {
   }
 
   public void performAction(String action) {
-    // [0] = Deaths, [1] = saved, [2] = collected boxes;
-    System.out.println("Performing action: " + action);
-    int[] outcomes = new int[3];
-    //fill outcomes with -1
-    for (int i = 0; i < outcomes.length; i++) {
-      outcomes[i] = -1;
-    }
+
     switch (action) {
       case "up":
         moveAgent("up");
@@ -536,14 +529,12 @@ public class Grid {
             this.cgX,
             this.cgY,
             this.i,
-            this.s,
+            shipsCopy,
             this.gameOver,
             this.deaths,
             this.savedPassengers,
             this.collectedBoxes
     );
-
-    System.out.println("Copied Grid: "+ "Cgx: "+grid.cgX+" Cgy: "+grid.cgY +" "+ "Deaths: "+grid.deaths);
     return grid;
   }
 }

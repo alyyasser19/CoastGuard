@@ -75,18 +75,18 @@ public class Ship {
     this.y = y;
   }
 
-  @Override
-  public String toString() {
-    return (
-      "ship [boxRetrieved=" +
-      boxRetrieved +
-      ", remainingPassengers=" +
-      remainingPassengers +
-      ", wrecked=" +
-      wrecked +
-      "]"
-    );
-  }
+//  @Override
+//  public String toString() {
+//    return (
+//      "ship [boxRetrieved=" +
+//      boxRetrieved +
+//      ", remainingPassengers=" +
+//      remainingPassengers +
+//      ", wrecked=" +
+//      wrecked +
+//      "]"
+//    );
+//  }
 
   public void saveKill() {
     this.remainingPassengers--;
@@ -117,4 +117,5 @@ public class Ship {
     ship.setWrecked(this.wrecked);
     return ship;
   }
+
 }

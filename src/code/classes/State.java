@@ -169,17 +169,16 @@ public class State {
 
     //Compare two states to see if they are the same based on cgx, cgy, and deaths
     public boolean compareStates(State state){
-        if(this.cgX == state.cgX && this.cgY == state.cgY && this.deaths == state.deaths){
+        if(this.cgX == state.cgX && this.cgY == state.cgY && this.deaths == state.deaths && this.operator == state.operator){
             return true;
         }
         return false;
     }
-
-    
-    // public String toString() {
-    //     return "State [grid=" + grid + ", parent=" + parent + ", plan=" + plan + ", operator=" + operator + ", cgX=" + cgX
-    //             + ", cgY=" + cgY + ", pathCost=" + pathCost + ", depth=" + depth + ", savedPassengers=" + savedPassengers
-    //             + ", collectedBoxes=" + collectedBoxes + ", deaths=" + deaths + ", numberNodesExpanded="
-    //             + numberNodesExpanded + "]";
-    // }
+//toString
+    @Override
+    public String toString() {
+        return "State [cgX=" + cgX + ", cgY=" + cgY + ", deaths=" + deaths
+                + ", operator="
+                + operator + "]";
+    }
 }
