@@ -330,16 +330,16 @@ public class Grid {
             s
               .get(i)
               .setRemainingPassengers(s.get(i).getRemainingPassengers() - C);
-            System.out.println("Capacity: " + C);
-            System.out.println("Max Capacity: " + maxC);
-            System.out.println("Picked up " + C + " passengers");
+//            System.out.println("Capacity: " + C);
+//            System.out.println("Max Capacity: " + maxC);
+//            System.out.println("Picked up " + C + " passengers");
             C = 0;
           } else {
-            System.out.println("Capacity: " + C);
-            System.out.println("Max Capacity: " + maxC);
+//            System.out.println("Capacity: " + C);
+//            System.out.println("Max Capacity: " + maxC);
             C -= s.get(i).getRemainingPassengers();
             s.get(i).setRemainingPassengers(0);
-            System.out.println("Picked up " + (maxC - C) + " passengers");
+//            System.out.println("Picked up " + (maxC - C) + " passengers");
           }
         }
       }
@@ -351,7 +351,7 @@ public class Grid {
       int savedPassengers = maxC - C;
       C = maxC;
 
-      System.out.println("Dropped off " + savedPassengers + " passengers");
+//      System.out.println("Dropped off " + savedPassengers + " passengers");
       this.savedPassengers += savedPassengers;
     }
   }
@@ -369,13 +369,13 @@ public class Grid {
     for (int i = 0; i < s.size(); i++) {
       if (!s.get(i).isWrecked() && s.get(i).getRemainingPassengers() > 0) {
         s.get(i).setRemainingPassengers(s.get(i).getRemainingPassengers() - 1);
-        System.out.println(
-          "Ship " +
-          i +
-          " has " +
-          s.get(i).getRemainingPassengers() +
-          " remaining passengers"
-        );
+//        System.out.println(
+//          "Ship " +
+//          i +
+//          " has " +
+//          s.get(i).getRemainingPassengers() +
+//          " remaining passengers"
+//        );
         deaths++;
       }
       if (
@@ -385,15 +385,15 @@ public class Grid {
       ) {
         grid[s.get(i).getY()][s.get(i).getX()] = "Wreck";
         s.get(i).setWrecked(true);
-        System.out.println("Ship " + i + " has been wrecked");
+//        System.out.println("Ship " + i + " has been wrecked");
       }
       if (s.get(i).isWrecked() && !s.get(i).isDestroyed()) {
         s.get(i).damageBox();
-        System.out.println("Ship " + i + " has Box Damage " + s.get(i).getBoxDamage() + " damage");
+//        System.out.println("Ship " + i + " has Box Damage " + s.get(i).getBoxDamage() + " damage");
         if (s.get(i).getBoxDamage() == 20) {
           grid[s.get(i).getY()][s.get(i).getX()] = "Destroyed";
           s.remove(i);
-          System.out.println("Ship " + i + " has been destroyed");
+//          System.out.println("Ship " + i + " has been destroyed");
           i--;
         }
       }
@@ -405,7 +405,7 @@ public class Grid {
     for (int i = 0; i < s.size(); i++) {
       if (s.get(i).getX() == cgX && s.get(i).getY() == cgY) {
         if (s.get(i).isWrecked() && !s.get(i).isDestroyed()) {
-          System.out.println("Retrieved box");
+//          System.out.println("Retrieved box");
           grid[s.get(i).getY()][s.get(i).getX()] = "Destroyed";
           s.remove(i);
           collectedBoxes++;
@@ -463,11 +463,11 @@ public class Grid {
     }
 
     //print all possible actions
-    System.out.println("Possible actions: ");
-    for (int i = 0; i < actions.size(); i++) {
-      System.out.print(actions.get(i) + " ");
-    }
-    System.out.println();
+//    System.out.println("Possible actions: ");
+//    for (int i = 0; i < actions.size(); i++) {
+//      System.out.print(actions.get(i) + " ");
+//    }
+//    System.out.println();
     return actions;
   }
 
@@ -516,12 +516,20 @@ public class Grid {
   }
 
   public Grid copyGrid(){
+    //copy grid grid
+    String[][] newGrid = new String[N][M];
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < M; j++) {
+        newGrid[i][j] = grid[i][j];
+      }
+    }
+
     ArrayList<Ship> shipsCopy = new ArrayList<Ship>();
     for(int i = 0; i < s.size(); i++){
       shipsCopy.add(s.get(i).copy());
     }
     Grid grid = new Grid(
-            this.grid,
+            newGrid,
             this.M,
             this.N,
             this.maxC,
@@ -537,4 +545,6 @@ public class Grid {
     );
     return grid;
   }
+
+
 }

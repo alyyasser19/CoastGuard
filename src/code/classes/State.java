@@ -1,6 +1,6 @@
 package code.classes;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class State {
     Grid grid;
@@ -143,7 +143,7 @@ public class State {
     //copy State
     public State copy() {
         Grid gridCopy = grid.copyGrid();
-        State parentCopy = parent;
+        State parentCopy = this;
         ArrayList<String> planCopy = new ArrayList<String>();
         //copy plan
         for (String s : plan) {
@@ -153,7 +153,7 @@ public class State {
         int cgXCopy = cgX;
         int cgYCopy = cgY;
         int pathCostCopy = pathCost;
-        int depthCopy = depth;
+        int depthCopy = depth + 1;
         int savedPassengersCopy = savedPassengers;
         int collectedBoxesCopy = collectedBoxes;
         int deathsCopy = deaths;
@@ -180,5 +180,20 @@ public class State {
         return "State [cgX=" + cgX + ", cgY=" + cgY + ", deaths=" + deaths
                 + ", operator="
                 + operator + "]";
+    }
+
+
+    @Override
+    public boolean equals(Object state) {
+        State x = (State) state;
+        return cgX == x.getCgX() && cgY == x.getCgY() && collectedBoxes == x.getCollectedBoxes() &&
+                deaths == x.getDeaths() && operator.equals(x.getOperator());
+    }
+
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cgX, cgY, deaths, operator);
     }
 }

@@ -1,13 +1,14 @@
 package code;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import code.classes.State;
 
 public abstract class Search {
     private String[] operators;
     private State initState;
-    private ArrayList<State> stateSpace = new ArrayList<State>();
+    private HashSet<State> stateSpace = new HashSet<State>();
     private ArrayList<State> queue = new ArrayList<State>();
     private String goalState;
 
@@ -33,20 +34,20 @@ public abstract class Search {
         this.initState = initState;
     }
 
-    public ArrayList<State> getStateSpace() {
-        return stateSpace;
-    }
-
-    public void setStateSpace(ArrayList<State> stateSpace) {
-        this.stateSpace = stateSpace;
-    }
-
     public ArrayList<State> getQueue() {
         return queue;
     }
 
     public String getGoalState() {
         return goalState;
+    }
+
+    public HashSet<State> getStateSpace() {
+        return stateSpace;
+    }
+
+    public void setStateSpace(HashSet<State> stateSpace) {
+        this.stateSpace = stateSpace;
     }
 
     public void setGoalState(String goalState) {
@@ -60,5 +61,7 @@ public abstract class Search {
     public abstract void printStateSpace();
 
     public abstract void printSolution(State node);
+
+
 
 }

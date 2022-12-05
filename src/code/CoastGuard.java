@@ -66,7 +66,7 @@ public class CoastGuard extends Search {
     @Override
     public State expand(State prevState) {
         String action = prevState.getOperator();
-        System.out.println("Expanding: " + action);
+        //System.out.println("Expanding: " + action);
 
         //init the state
         Grid currentGrid = prevState.getGrid();
@@ -132,10 +132,6 @@ public class CoastGuard extends Search {
         return null;
     }
 
-    private static String IterativeDeepening(Grid grid, boolean visualize) {
-        return null;
-    }
-
     private static String depthFirst(Grid grid, boolean visualize) {
         //Set Initial Strings
         Search searchProblem = new CoastGuard();
@@ -180,7 +176,7 @@ public class CoastGuard extends Search {
             searchProblem.getQueue().add(currentState);
             searchProblem.getStateSpace().add(currentState);
             if (visualize) {
-                System.out.println(currentGrid.generateGridString());
+                currentGrid.printGrid();
             }
         }
 
@@ -192,11 +188,9 @@ public class CoastGuard extends Search {
     }
 
     private static String breadthFirst(Grid grid, boolean visualize) {
-        //Set Initial Strings
+        //int state
         Search searchProblem = new CoastGuard();
-
         Grid currentGrid = grid;
-        //set Root State
         State rootState = new State(
                 currentGrid,
                 null,
@@ -213,45 +207,45 @@ public class CoastGuard extends Search {
         );
         searchProblem.setInitState(rootState);
         searchProblem.getStateSpace().add(rootState);
-        searchProblem.getQueue().add(rootState);
-        //Set Initial State
         State currentState = rootState;
+
+
+        //get possible actions
         ArrayList<String> actions = currentGrid.getPossibleActions();
         for (String action : actions) {
-            State temp = currentState.copy();
+            State temp = rootState.copy();
             temp.setOperator(action);
             searchProblem.getQueue().add(temp);
             searchProblem.getStateSpace().add(temp);
         }
-
-        while(!currentGrid.checkGameOver()){
+        while (!currentGrid.checkGameOver()) {
             currentState = searchProblem.expand(searchProblem.getQueue().remove(0));
             currentGrid = currentState.getGrid();
             actions = currentGrid.getPossibleActions();
+            //get possible actions
             for (String action : actions) {
                 State temp = currentState.copy();
                 temp.setOperator(action);
-                searchProblem.getQueue().add(temp);
-                searchProblem.getStateSpace().add(temp);
+                if (!searchProblem.getStateSpace().contains(temp)) {
+                    searchProblem.getQueue().add(temp);
+                    searchProblem.getStateSpace().add(temp);
+                }
             }
-            removeRedundantStates(searchProblem.getQueue());
+            if (visualize) {
+                currentGrid.printGrid();
+            }
         }
-
         String solution = stringifyState(currentState);
-        if (visualize) {
-            System.out.println("Solution: " + solution);
-        }
         return solution;
-
     }
 
     //remove redundant states from queue from back to front
-    private static void removeRedundantStates(ArrayList<State> queue){
-        for(int i = queue.size() - 1; i >= 0; i--){
+    private static void removeRedundantStates(ArrayList<State> queue) {
+        for (int i = queue.size() - 1; i >= 0; i--) {
             State state = queue.get(i);
-            for(int j = i - 1; j >= 0; j--){
+            for (int j = i - 1; j >= 0; j--) {
                 State state2 = queue.get(j);
-                if(state.compareStates(state2)){
+                if (state.compareStates(state2)) {
                     queue.remove(i);
                     break;
                 }
@@ -260,12 +254,94 @@ public class CoastGuard extends Search {
     }
 
     //check if state is redundant
-    private static boolean isRedundantState(State state, ArrayList<State> queue){
-        for(State state2 : queue){
-            if(state.compareStates(state2)){
+    private static boolean isRedundantState(State state, ArrayList<State> queue) {
+        for (State state2 : queue) {
+            if (state.compareStates(state2)) {
                 return true;
             }
         }
         return false;
     }
+
+    private static String IterativeDeepening(Grid grid, boolean visualize) {
+        //int state
+        Search searchProblem = new CoastGuard();
+        Grid currentGrid = grid;
+        int depthLimit = 0;
+        boolean increaseDepth = true;
+        State currentState = null;
+        currentGrid = grid.copyGrid();
+        currentState = new State(
+                currentGrid,
+                null,
+                new ArrayList<String>(),
+                "Init State",
+                currentGrid.getCgX(),
+                currentGrid.getCgY(),
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+        );
+        ArrayList<String> actions = new ArrayList<String>();
+        while (!currentGrid.checkGameOver()) {
+            if (increaseDepth) {
+                currentGrid = grid.copyGrid();
+                currentState = new State(
+                        currentGrid,
+                        null,
+                        new ArrayList<String>(),
+                        "Init State",
+                        currentGrid.getCgX(),
+                        currentGrid.getCgY(),
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                );
+                searchProblem.getQueue().clear();
+                searchProblem.getStateSpace().clear();
+                searchProblem.setInitState(currentState);
+                searchProblem.getStateSpace().add(currentState);
+                actions = currentGrid.getPossibleActions();
+                for (String action : actions) {
+                    State temp = currentState.copy();
+                    temp.setOperator(action);
+                    searchProblem.getQueue().add(temp);
+                    searchProblem.getStateSpace().add(temp);
+                }
+            }
+            increaseDepth = false;
+            if(currentState.getDepth() <=depthLimit) {
+                currentState = searchProblem.expand(searchProblem.getQueue().remove(0));
+                currentGrid = currentState.getGrid();
+                actions = currentGrid.getPossibleActions();
+                //get possible actions
+                for (String action : actions) {
+                    State temp = currentState.copy();
+                    temp.setOperator(action);
+                    if (!searchProblem.getStateSpace().contains(temp)) {
+                        searchProblem.getQueue().add(temp);
+                        searchProblem.getStateSpace().add(temp);
+                    }
+                }
+            }
+            else{
+                increaseDepth = true;
+                depthLimit++;
+                System.out.println("Depth Limit: " + depthLimit);
+            }
+            if (visualize) {
+                currentGrid.printGrid();
+            }
+        }
+        String solution = stringifyState(currentState);
+        return solution;
+    }
 }
+
+
