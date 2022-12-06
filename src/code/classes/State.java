@@ -15,9 +15,10 @@ public class State {
     int collectedBoxes;
     int deaths;
     int numberNodesExpanded;
+    int heuristicValue;
 
     public State(Grid grid, State parent, ArrayList<String> plan, String operator, int cgX, int cgY, int pathCost,
-            int depth, int savedPassengers, int collectedBoxes, int deaths, int numberNodesExpanded) {
+                 int depth, int savedPassengers, int collectedBoxes, int deaths, int numberNodesExpanded, int heuristicValue) {
         this.grid = grid;
         this.parent = parent;
         this.plan = plan;
@@ -30,6 +31,7 @@ public class State {
         this.collectedBoxes = collectedBoxes;
         this.deaths = deaths;
         this.numberNodesExpanded = numberNodesExpanded;
+        this.heuristicValue = heuristicValue;
     }
 
     public Grid getGrid() {
@@ -128,6 +130,14 @@ public class State {
         this.numberNodesExpanded = numberNodesExpanded;
     }
 
+    public int getHeuristicValue() {
+        return heuristicValue;
+    }
+
+    public void setHeuristicValue(int heuristicValue) {
+        this.heuristicValue = heuristicValue;
+    }
+
     public void printStateInfo() {
         System.out.println("State Info:");
         System.out.println("Operator: " + this.operator);
@@ -159,22 +169,23 @@ public class State {
         int deathsCopy = deaths;
         int numberNodesExpandedCopy = numberNodesExpanded;
         State stateCopy = new State(gridCopy, parentCopy, planCopy, operatorCopy, cgXCopy, cgYCopy, pathCostCopy, depthCopy,
-                savedPassengersCopy, collectedBoxesCopy, deathsCopy, numberNodesExpandedCopy);
+                savedPassengersCopy, collectedBoxesCopy, deathsCopy, numberNodesExpandedCopy, heuristicValue);
         return stateCopy;
     }
 
-    public String stateID(){
-        return "Operator: " + this.operator+ " " + "cgX: " + this.cgX +" " + "cgY: " + this.cgY +" "+"depth: " + this.depth +" " +"numberNodesExpanded: " + this.numberNodesExpanded + " "+ "Plan Size: " + this.plan.size();
+    public String stateID() {
+        return "Operator: " + this.operator + " " + "cgX: " + this.cgX + " " + "cgY: " + this.cgY + " " + "depth: " + this.depth + " " + "numberNodesExpanded: " + this.numberNodesExpanded + " " + "Plan Size: " + this.plan.size();
     }
 
     //Compare two states to see if they are the same based on cgx, cgy, and deaths
-    public boolean compareStates(State state){
-        if(this.cgX == state.cgX && this.cgY == state.cgY && this.deaths == state.deaths && this.operator == state.operator){
+    public boolean compareStates(State state) {
+        if (this.cgX == state.cgX && this.cgY == state.cgY && this.deaths == state.deaths && this.operator == state.operator) {
             return true;
         }
         return false;
     }
-//toString
+
+    //toString
     @Override
     public String toString() {
         return "State [cgX=" + cgX + ", cgY=" + cgY + ", deaths=" + deaths
@@ -189,7 +200,6 @@ public class State {
         return cgX == x.getCgX() && cgY == x.getCgY() && collectedBoxes == x.getCollectedBoxes() &&
                 deaths == x.getDeaths() && operator.equals(x.getOperator());
     }
-
 
 
     @Override

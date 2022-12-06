@@ -591,7 +591,7 @@ public class Grid {
         return path;
     }
 
-    //calculate closest station to agent using coordinates in array i
+    //calculate the closest station to agent using coordinates in array i
     public int closestStation(){
         int closestStation = 0;
         int closestDistance = 1000;
@@ -634,6 +634,28 @@ public class Grid {
             copy.performAction(copy.nextActionToStation(station));
         }
         return path;
+    }
+
+    //get the best path to specific ship
+    public ArrayList<String> bestPathToShip(int ship){
+    Grid copy = copyGrid();
+        ArrayList<String> path = new ArrayList<String>();
+        while(copy.getCgX() != copy.getS().get(ship).getX() || copy.getCgY() != copy.getS().get(ship).getY()){
+            path.add(copy.nextActionToShip(ship));
+            copy.performAction(copy.nextActionToShip(ship));
+        }
+        return path;
+    }
+    public int findShipWithMostPassengers(){
+        int ship = 0;
+        int mostPassengers = 0;
+        for(int i = 0; i < s.size(); i++){
+            if(s.get(i).getRemainingPassengers() > mostPassengers){
+                mostPassengers = s.get(i).getRemainingPassengers();
+                ship = i;
+            }
+        }
+        return ship;
     }
 
 }
