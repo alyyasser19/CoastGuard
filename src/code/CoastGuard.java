@@ -1,6 +1,7 @@
 package code;
 
 import code.classes.Grid;
+import code.classes.Ship;
 import code.classes.State;
 
 import java.util.ArrayList;
@@ -128,7 +129,220 @@ public class CoastGuard extends Search {
     }
 
     private static String AStar(Grid grid, boolean visualize, int i) {
+        //The First Greedy Search uses the Manhattan Distance as the heuristic to find the closest ship if there is space if there isn't then it finds the closest station
+        if (i == 1) {
+            return AStarManhattan(grid, visualize);
+        }
+        //The Second Greedy searches for ship with max passengers
+        else if (i == 2) {
+            return AStarMaxPassengers(grid, visualize);
+        }
         return null;
+    }
+
+    private static String AStarMaxPassengers(Grid grid, boolean visualize) {
+        //int state
+        Search searchProblem = new CoastGuard();
+        Grid currentGrid = grid;
+        State rootState = new State(
+                currentGrid,
+                null,
+                new ArrayList<String>(),
+                "Init State",
+                currentGrid.getCgX(),
+                currentGrid.getCgY(),
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                100
+        );
+
+        searchProblem.setInitState(rootState);
+        searchProblem.getStateSpace().add(rootState);
+        State currentState = rootState;
+
+        int shipWithMaxPassengers = currentGrid.findShipWithMostPassengers();
+        ArrayList<String> curBestPath = grid.copyGrid().bestPathToShip(shipWithMaxPassengers);
+        int curBestPathLength = curBestPath.size();
+
+        //get possible actions
+        ArrayList<String> actions = currentGrid.getPossibleActions();
+        for (String action : actions) {
+            State temp = rootState.copy();
+            temp.setOperator(action);
+            // find based on the index of this action if exists in the best path
+            int index = curBestPath.indexOf(action);
+            if (index != -1) {
+                temp.setHeuristicValue(index + 1);
+            } else {
+                temp.setHeuristicValue(curBestPathLength + 1);
+            }
+            searchProblem.getQueue().add(temp);
+            searchProblem.getStateSpace().add(temp);
+        }
+
+        while (!currentGrid.checkGameOver()) {
+            //get the next state
+            currentState = searchProblem.getQueue().remove(0);
+            System.out.println("Current State: " + currentState.getPlan());
+            currentState.setHeuristicValue(curBestPathLength + 1);
+            //print plan
+            //expand the state with the lowest path cost
+            for (int i = 0; i < searchProblem.getQueue().size(); i++) {
+                State state = searchProblem.getQueue().get(i);
+                if (state.getHeuristicValue() + state.getPathCost() < currentState.getHeuristicValue() + currentState.getPathCost()) {
+                    System.out.println("Chose new state");
+                    currentState = state;
+                }
+            }
+            //clear the Queue and State Space
+            searchProblem.getQueue().clear();
+            searchProblem.getStateSpace().clear();
+            currentState = searchProblem.expand(currentState);
+            currentGrid = currentState.getGrid();
+            //check if all ships are wrecked
+            boolean allShipsWrecked = true;
+            for (Ship ship : currentGrid.getS()) {
+                if (!ship.isWrecked()) {
+                    allShipsWrecked = false;
+                    break;
+                }
+            }
+
+            if (currentGrid.getC() > 0 && !currentGrid.getS().isEmpty() && !allShipsWrecked) {
+                shipWithMaxPassengers = currentGrid.findShipWithMostPassengers();
+                curBestPath = currentGrid.copyGrid().bestPathToShip(shipWithMaxPassengers);
+            } else {
+                curBestPath = currentGrid.copyGrid().bestPathToStation();
+            }
+            curBestPathLength = curBestPath.size();
+            actions = currentGrid.getPossibleActions();
+            //get possible actions
+            for (String action : actions) {
+                State temp = currentState.copy();
+                temp.setOperator(action);
+                // find based on the index of this action if exists in the best path
+                int index = curBestPath.indexOf(action);
+                if (index != -1) {
+                    temp.setHeuristicValue(index + 1);
+                } else if (temp.getOperator().equals("pickup") || temp.getOperator().equals("drop") || temp.getOperator().equals("retrieve")) {
+                    temp.setHeuristicValue(0);
+                } else {
+                    temp.setHeuristicValue(curBestPathLength + 1);
+                }
+                if (!searchProblem.getStateSpace().contains(temp)) {
+                    searchProblem.getQueue().add(temp);
+                    searchProblem.getStateSpace().add(temp);
+                }
+            }
+            System.out.println("possible actions: " + actions);
+            System.out.println("Queue: " + searchProblem.getQueue());
+            if (visualize) {
+                currentGrid.printGrid();
+            }
+        }
+
+        String solution = stringifyState(currentState);
+        return solution;
+    }
+
+    private static String AStarManhattan(Grid grid, boolean visualize) {
+        //int state
+        Search searchProblem = new CoastGuard();
+        Grid currentGrid = grid;
+        State rootState = new State(
+                currentGrid,
+                null,
+                new ArrayList<String>(),
+                "Init State",
+                currentGrid.getCgX(),
+                currentGrid.getCgY(),
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                100
+        );
+        searchProblem.setInitState(rootState);
+        searchProblem.getStateSpace().add(rootState);
+        State currentState = rootState;
+
+        ArrayList<String> curBestPath = grid.copyGrid().bestPathToShip();
+        int curBestPathLength = curBestPath.size();
+
+        //get possible actions
+        ArrayList<String> actions = currentGrid.getPossibleActions();
+        for (String action : actions) {
+            State temp = rootState.copy();
+            temp.setOperator(action);
+            // find based on the index of this action if exists in the best path
+            int index = curBestPath.indexOf(action);
+            if (index != -1) {
+                temp.setHeuristicValue(index + 1);
+            } else {
+                temp.setHeuristicValue(curBestPathLength + 1);
+            }
+            searchProblem.getQueue().add(temp);
+            searchProblem.getStateSpace().add(temp);
+        }
+
+        while (!currentGrid.checkGameOver()) {
+            currentState.setHeuristicValue(curBestPathLength + 1);
+            //print plan
+            //expand the state with the lowest path cost
+            for (int i = 0; i < searchProblem.getQueue().size(); i++) {
+                State state = searchProblem.getQueue().get(i);
+                if (state.getHeuristicValue() + state.getPathCost() < currentState.getHeuristicValue() + state.getPathCost()) {
+                    currentState = state;
+                }
+            }
+            //clear the Queue and State Space
+            searchProblem.getQueue().clear();
+            searchProblem.getStateSpace().clear();
+            currentState = searchProblem.expand(currentState);
+            if(currentState.getPlan().size() == 50){
+                break;
+            }
+            currentGrid = currentState.getGrid();
+
+            if (currentGrid.getC() > 0 && !currentGrid.getS().isEmpty()) {
+                curBestPath = currentGrid.copyGrid().bestPathToShip();
+            } else {
+                curBestPath = currentGrid.copyGrid().bestPathToStation();
+            }
+            curBestPathLength = curBestPath.size();
+            actions = currentGrid.getPossibleActions();
+            //get possible actions
+            for (String action : actions) {
+                State temp = currentState.copy();
+                temp.setOperator(action);
+                // find based on the index of this action if exists in the best path
+                int index = curBestPath.indexOf(action);
+                if (index != -1) {
+                    temp.setHeuristicValue(index + 1);
+                } else if (temp.getOperator().equals("pickup") || temp.getOperator().equals("drop") || temp.getOperator().equals("retrieve")) {
+                    temp.setHeuristicValue(0);
+                } else {
+                    temp.setHeuristicValue(curBestPathLength + 1);
+                }
+                if (!searchProblem.getStateSpace().contains(temp)) {
+                    searchProblem.getQueue().add(temp);
+                    searchProblem.getStateSpace().add(temp);
+                }
+            }
+            if (visualize) {
+                currentGrid.printGrid();
+            }
+        }
+
+        String solution = stringifyState(currentState);
+        return solution;
+
     }
 
 
@@ -514,12 +728,17 @@ while (!currentGrid.checkGameOver()) {
             searchProblem.getQueue().clear();
             searchProblem.getStateSpace().clear();
             currentState = searchProblem.expand(currentState);
-            if(currentState.getPlan().size() == 50){
+
+            currentGrid = currentState.getGrid();
+//check if all ships are wrecked
+    boolean allShipsWrecked = true;
+        for (Ship ship : currentGrid.getS()) {
+            if (!ship.isWrecked()) {
+                allShipsWrecked = false;
                 break;
             }
-            currentGrid = currentState.getGrid();
-
-            if (currentGrid.getC() > 0 && !currentGrid.getS().isEmpty()) {
+    }
+            if (currentGrid.getC() > 0 && !currentGrid.getS().isEmpty() && !allShipsWrecked) {
                 shipWithMaxPassengers = currentGrid.findShipWithMostPassengers();
                 curBestPath = currentGrid.copyGrid().bestPathToShip(shipWithMaxPassengers);
             } else {

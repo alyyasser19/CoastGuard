@@ -162,7 +162,7 @@ public class State {
         String operatorCopy = operator;
         int cgXCopy = cgX;
         int cgYCopy = cgY;
-        int pathCostCopy = pathCost;
+        int pathCostCopy = pathCost + calculatePathCost();
         int depthCopy = depth + 1;
         int savedPassengersCopy = savedPassengers;
         int collectedBoxesCopy = collectedBoxes;
@@ -171,6 +171,21 @@ public class State {
         State stateCopy = new State(gridCopy, parentCopy, planCopy, operatorCopy, cgXCopy, cgYCopy, pathCostCopy, depthCopy,
                 savedPassengersCopy, collectedBoxesCopy, deathsCopy, numberNodesExpandedCopy, heuristicValue);
         return stateCopy;
+    }
+
+    public int calculatePathCost() {
+        int pathCost = 0;
+        State state = this;
+        Grid grid = state.getGrid();
+        for(Ship ship : grid.getS()) {
+            if(!ship.isWrecked()) {
+                pathCost += ship.getRemainingPassengers();
+            }
+            else if (ship.isWrecked() && ship.getBoxDamage() == 19) {
+                pathCost ++;
+            }
+        }
+        return pathCost;
     }
 
     public String stateID() {
