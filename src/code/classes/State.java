@@ -179,7 +179,7 @@ public class State {
     public String toString() {
         return "State [cgX=" + cgX + ", cgY=" + cgY + ", deaths=" + deaths
                 + ", operator="
-                + operator + "]";
+                + operator + ", pathCost=" + pathCost + "]";
     }
 
 

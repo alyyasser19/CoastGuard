@@ -128,9 +128,6 @@ public class CoastGuard extends Search {
         return null;
     }
 
-    private static String greedy(Grid grid, boolean visualize, int i) {
-        return null;
-    }
 
     private static String depthFirst(Grid grid, boolean visualize) {
         //Set Initial Strings
@@ -316,7 +313,7 @@ public class CoastGuard extends Search {
                 }
             }
             increaseDepth = false;
-            if(currentState.getDepth() <=depthLimit) {
+            if (currentState.getDepth() <= depthLimit) {
                 currentState = searchProblem.expand(searchProblem.getQueue().remove(0));
                 currentGrid = currentState.getGrid();
                 actions = currentGrid.getPossibleActions();
@@ -329,8 +326,7 @@ public class CoastGuard extends Search {
                         searchProblem.getStateSpace().add(temp);
                     }
                 }
-            }
-            else{
+            } else {
                 increaseDepth = true;
                 depthLimit++;
                 System.out.println("Depth Limit: " + depthLimit);
@@ -341,6 +337,110 @@ public class CoastGuard extends Search {
         }
         String solution = stringifyState(currentState);
         return solution;
+    }
+
+    private static String greedy(Grid grid, boolean visualize, int i) {
+        //The First Greedy Search uses the Manhattan Distance as the heuristic to find the closest ship if there is space if there isn't then it finds the closest station
+        if (i == 1) {
+            return greedyManhattan(grid, visualize);
+        }
+        return null;
+    }
+
+    private static String greedyManhattan(Grid grid, boolean visualize) {
+        //int state
+        Search searchProblem = new CoastGuard();
+        Grid currentGrid = grid;
+        State rootState = new State(
+                currentGrid,
+                null,
+                new ArrayList<String>(),
+                "Init State",
+                currentGrid.getCgX(),
+                currentGrid.getCgY(),
+                100,
+                0,
+                0,
+                0,
+                0,
+                0
+        );
+        searchProblem.setInitState(rootState);
+        searchProblem.getStateSpace().add(rootState);
+        State currentState = rootState;
+
+        ArrayList<String> curBestPath = grid.copyGrid().bestPathToShip();
+        int curBestPathLength = curBestPath.size();
+
+        //get possible actions
+        ArrayList<String> actions = currentGrid.getPossibleActions();
+        for (String action : actions) {
+            State temp = rootState.copy();
+            temp.setOperator(action);
+            // find based on the index of this action if exists in the best path
+            int index = curBestPath.indexOf(action);
+            if (index != -1) {
+                temp.setPathCost(index + 1);
+            } else {
+                temp.setPathCost(curBestPathLength + 1);
+            }
+            searchProblem.getQueue().add(temp);
+            searchProblem.getStateSpace().add(temp);
+        }
+
+        while (!currentGrid.checkGameOver()) {
+            currentState.setPathCost(curBestPathLength + 1);
+            //print plan
+            //expand the state with the lowest path cost
+            for (int i = 0; i < searchProblem.getQueue().size(); i++) {
+                State state = searchProblem.getQueue().get(i);
+                if (state.getPathCost() < currentState.getPathCost()) {
+                    currentState = state;
+                }
+            }
+            //clear the Queue and State Space
+            searchProblem.getQueue().clear();
+            searchProblem.getStateSpace().clear();
+            currentState = searchProblem.expand(currentState);
+            if(currentState.getPlan().size() == 50){
+                break;
+            }
+            currentGrid = currentState.getGrid();
+
+            if (currentGrid.getC() > 0 && !currentGrid.getS().isEmpty()) {
+                curBestPath = currentGrid.copyGrid().bestPathToShip();
+            } else {
+                curBestPath = currentGrid.copyGrid().bestPathToStation();
+            }
+            curBestPathLength = curBestPath.size();
+            actions = currentGrid.getPossibleActions();
+            //get possible actions
+            for (String action : actions) {
+                State temp = currentState.copy();
+                temp.setOperator(action);
+                // find based on the index of this action if exists in the best path
+                int index = curBestPath.indexOf(action);
+                if (index != -1) {
+                    temp.setPathCost(index + 1);
+                } else if (temp.getOperator().equals("pickup") || temp.getOperator().equals("drop") || temp.getOperator().equals("retrieve")) {
+                    temp.setPathCost(0);
+                } else {
+                    temp.setPathCost(curBestPathLength + 1);
+                }
+                if (!searchProblem.getStateSpace().contains(temp)) {
+                    searchProblem.getQueue().add(temp);
+                    searchProblem.getStateSpace().add(temp);
+                }
+            }
+            if (visualize) {
+                currentGrid.printGrid();
+            }
+        }
+
+        String solution = stringifyState(currentState);
+        return solution;
+
+
     }
 }
 

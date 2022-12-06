@@ -546,5 +546,94 @@ public class Grid {
     return grid;
   }
 
+  //Calculate the closest ship to agent
+    public int closestShip(){
+        int closestShip = 0;
+        int closestDistance = 1000;
+        for(int i = 0; i < s.size(); i++){
+        int distance = Math.abs(s.get(i).getX() - cgX) + Math.abs(s.get(i).getY() - cgY);
+        if(distance < closestDistance){
+            closestDistance = distance;
+            closestShip = i;
+        }
+        }
+        return closestShip;
+    }
+
+    //get next action to the closest ship using ship number
+    public String nextActionToShip(int ship){
+        int x = s.get(ship).getX();
+        int y = s.get(ship).getY();
+        if(cgX < x){
+            return "right";
+        }
+        if(cgX > x){
+            return "left";
+        }
+        if(cgY < y){
+            return "down";
+        }
+        if(cgY > y){
+            return "up";
+        }
+        return "pickup";
+    }
+
+    //get the best path to the closest ship
+    public ArrayList<String> bestPathToShip(){
+    Grid copy = copyGrid();
+        ArrayList<String> path = new ArrayList<String>();
+        int ship = copy.closestShip();
+        while(copy.getCgX() != copy.getS().get(ship).getX() || copy.getCgY() != copy.getS().get(ship).getY()){
+            path.add(copy.nextActionToShip(ship));
+            copy.performAction(copy.nextActionToShip(ship));
+        }
+        return path;
+    }
+
+    //calculate closest station to agent using coordinates in array i
+    public int closestStation(){
+        int closestStation = 0;
+        int closestDistance = 1000;
+        for(int i = 0; i < this.i.length; i++){
+        int distance = Math.abs(this.i[i][0] - cgY) + Math.abs(this.i[i][1] - cgX);
+        if(distance < closestDistance){
+            closestDistance = distance;
+            closestStation = i;
+        }
+        }
+        return closestStation;
+    }
+
+    //get next action to the closest station using station number
+    public String nextActionToStation(int station){
+        int x = this.i[station][1];
+        int y = this.i[station][0];
+        if(cgX < x){
+            return "right";
+        }
+        if(cgX > x){
+            return "left";
+        }
+        if(cgY < y){
+            return "down";
+        }
+        if(cgY > y){
+            return "up";
+        }
+        return "drop";
+    }
+
+    //get the best path to the closest station
+    public ArrayList<String> bestPathToStation(){
+    Grid copy = copyGrid();
+        ArrayList<String> path = new ArrayList<String>();
+        int station = copy.closestStation();
+        while(copy.getCgX() != copy.getI()[station][1] || copy.getCgY() != copy.i[station][0]){
+            path.add(copy.nextActionToStation(station));
+            copy.performAction(copy.nextActionToStation(station));
+        }
+        return path;
+    }
 
 }
