@@ -294,7 +294,9 @@ public class CoastGuard extends Search {
             }
             increaseDepth = false;
             if (currentState.getDepth() <= depthLimit) {
-                currentState = searchProblem.expand(searchProblem.getQueue().remove(0));
+                currentState = searchProblem.expand(searchProblem.getQueue().remove(
+                        searchProblem.getQueue().size() - 1)
+                    );
                 currentGrid = currentState.getGrid();
                 actions = currentGrid.getPossibleActions();
                 //get possible actions
