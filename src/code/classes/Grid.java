@@ -3,20 +3,25 @@ package code.classes;
 import java.util.ArrayList;
 
 public class Grid {
+
     private String[][] grid;
+
     private int M; // columns
     private int N; // rows
+
     private int maxC; //max capacity
     private int C; // capacity
+
     private int cgX; //coast guard x
     private int cgY; //coast guard y
+
     private int[][] i; //stations coordinates
+
     private ArrayList<Ship> s = new ArrayList<Ship>(); //ships coordinates
+
     private boolean gameOver = false;
     private int deaths = 0;
-
     private int savedPassengers = 0;
-
     private int collectedBoxes = 0;
 
     public Grid(int m, int n) {
@@ -408,7 +413,7 @@ public class Grid {
 //          System.out.println("Retrieved box");
                     grid[s.get(i).getY()][s.get(i).getX()] = "Destroyed";
                     s.remove(i);
-                    System.out.println("Ship " + i + " has been destroyed");
+                    //System.out.println("Ship " + i + " has been destroyed");
                     collectedBoxes++;
                 }
             }
@@ -434,7 +439,7 @@ public class Grid {
     public ArrayList<String> getPossibleActions() {
         ArrayList<String> actions = new ArrayList<String>();
         for (int i = 0; i < s.size(); i++) {
-            if (s.get(i).getX() == cgX && s.get(i).getY() == cgY) { // add capacity check
+            if (s.get(i).getX() == cgX && s.get(i).getY() == cgY) {
                 if (
                         s.get(i).getRemainingPassengers() > 0 &&
                                 C > 0 &&
@@ -650,16 +655,16 @@ public class Grid {
         int y = copy.getS().get(ship).getY();
         boolean isWreck = copy.getS().get(ship).isWrecked();
         int curLength = copy.getS().size();
-        System.out.println("Ships in best path: ");
-        System.out.println(copy.getS());
+        //System.out.println("Ships in best path: ");
+        //System.out.println(copy.getS());
         ArrayList<String> path = new ArrayList<String>();
         while (copy.getCgX() != x || copy.getCgY() != y && !isWreck) {
             if(curLength == 0){
                 break;
             }
             if(curLength != copy.getS().size()){
-                System.out.println("Ships in best path: ");
-                System.out.println(copy.getS());
+                //System.out.println("Ships in best path: ");
+                //System.out.println(copy.getS());
                 curLength = copy.getS().size();
                 ship --;
             }
@@ -671,8 +676,8 @@ public class Grid {
 
     public int findShipWithMostPassengers() {
         Grid copy = this.copyGrid();
-        System.out.println("Ships in most pas: ");
-        System.out.println(copy.getS());
+        //System.out.println("Ships in most pas: ");
+        //System.out.println(copy.getS());
         int ship = 0;
         int mostPassengers = 0;
         for (int i = 0; i < copy.getS().size(); i++) {
@@ -682,6 +687,22 @@ public class Grid {
             }
         }
         return ship;
+    }
+
+    public int findClosestWreck(){
+        Grid copy = this.copyGrid();
+        int closestWreck = -1;
+        int closestDistance = 1000;
+        for (int i = 0; i < copy.getS().size(); i++) {
+            if(copy.getS().get(i).isWrecked()){
+                int distance = Math.abs(copy.getS().get(i).getX() - copy.getCgX()) + Math.abs(copy.getS().get(i).getY() - copy.getCgY());
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestWreck = i;
+                }
+            }
+        }
+        return closestWreck;
     }
 
 }

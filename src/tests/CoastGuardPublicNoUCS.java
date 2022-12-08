@@ -26,12 +26,15 @@ public class CoastGuardPublicNoUCS {
 	String grid9 = "7,5;100;3,4;2,6,3,5;0,0,4,0,1,8,1,4,77,1,5,1,3,2,94,4,3,46;";
 	String grid10= "10,6;59;1,7;0,0,2,2,3,0,5,3;1,3,69,3,4,80,4,7,94,4,9,14,5,2,39;";
 
-
 	@Test(timeout = 10000)
 	public void testa0() throws Exception {
+		long beforeUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
 		String solution = CoastGuard.solve(grid0, "BF", false);
 		solution = solution.replace(" ", "");
 		assertTrue("The output actions do not lead to a goal state.", applyPlan(grid0, solution));
+		long afterUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
+		long actualMemUsed=afterUsedMem-beforeUsedMem;
+		System.out.println("Memory used for grid0 using BF: " + actualMemUsed + " bytes");
 	}
 	
 	@Test(timeout = 10000)
@@ -287,7 +290,7 @@ public class CoastGuardPublicNoUCS {
 
 	@Test(timeout = 100000)
 	public void testf4() throws Exception {
-		String solution = CoastGuard.solve(grid4, "GR2", false);
+		String solution = CoastGuard.solve(grid4, "GR2", true);
 		assertTrue("The output actions do not lead to a goal state.", applyPlan(grid4, solution));
 	}
 	@Test(timeout = 10000)
@@ -421,7 +424,9 @@ public class CoastGuardPublicNoUCS {
 	public void testh9() throws Exception {
 		String solution = CoastGuard.solve(grid9, "AS2", false);
 		assertTrue("The output actions do not lead to a goal state.", applyPlan(grid9, solution));
-	}	
+	}
+
+
 
 	
 static class Checker{
@@ -626,6 +631,8 @@ static class Checker{
 	
 		return s.cool() && s.d==blue && s.r==doors;
 	}
+
+
 }
 	
 
