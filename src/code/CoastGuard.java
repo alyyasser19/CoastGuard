@@ -667,7 +667,7 @@ public class CoastGuard extends Search {
                 currentGrid.printGrid();
             }
         }
-
+        System.out.println("Number of nodes expanded: " + searchProblem.getNumberNodesExpanded());
         String solution = stringifyState(currentState);
         return solution;
     }
