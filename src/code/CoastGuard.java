@@ -367,7 +367,7 @@ public class CoastGuard extends Search {
             // find based on the index of this action if exists in the best path
             int index = curBestPath.indexOf(action);
             if (index != -1) {
-                temp.setHeuristicValue(index + 1);
+                temp.setHeuristicValue(index);
             } else {
                 temp.setHeuristicValue(curBestPathLength + 1);
             }
@@ -408,7 +408,7 @@ public class CoastGuard extends Search {
                 // find based on the index of this action if exists in the best path
                 int index = curBestPath.indexOf(action);
                 if (index != -1) {
-                    temp.setHeuristicValue(index + 1);
+                    temp.setHeuristicValue(index);
                 } else if (temp.getOperator().equals("pickup") || temp.getOperator().equals("drop") || temp.getOperator().equals("retrieve")) {
                     temp.setHeuristicValue(0);
                 } else {
@@ -472,7 +472,7 @@ public class CoastGuard extends Search {
             // find based on the index of this action if exists in the best path
             int index = curBestPath.indexOf(action);
             if (index != -1) {
-                temp.setHeuristicValue(index + 1);
+                temp.setHeuristicValue(index);
             } else {
                 temp.setHeuristicValue(curBestPathLength + 1);
             }
@@ -517,7 +517,7 @@ public class CoastGuard extends Search {
                 // find based on the index of this action if exists in the best path
                 int index = curBestPath.indexOf(action);
                 if (index != -1) {
-                    temp.setHeuristicValue(index + 1);
+                    temp.setHeuristicValue(index);
                 } else if (temp.getOperator().equals("pickup") || temp.getOperator().equals("drop") || temp.getOperator().equals("retrieve")) {
                     temp.setHeuristicValue(0);
                 } else {
@@ -591,7 +591,7 @@ public class CoastGuard extends Search {
             // find based on the index of this action if exists in the best path
             int index = curBestPath.indexOf(action);
             if (index != -1) {
-                temp.setHeuristicValue(index + 1);
+                temp.setHeuristicValue(index);
             } else {
                 temp.setHeuristicValue(curBestPathLength + 1);
             }
@@ -639,7 +639,7 @@ public class CoastGuard extends Search {
                 // find based on the index of this action if exists in the best path
                 int index = curBestPath.indexOf(action);
                 if (index != -1) {
-                    temp.setHeuristicValue(index + 1);
+                    temp.setHeuristicValue(index);
                 } else if (temp.getOperator().equals("pickup") || temp.getOperator().equals("drop") || temp.getOperator().equals("retrieve")) {
                     temp.setHeuristicValue(0);
                 } else {
@@ -695,7 +695,7 @@ public class CoastGuard extends Search {
             // find based on the index of this action if exists in the best path
             int index = curBestPath.indexOf(action);
             if (index != -1) {
-                temp.setHeuristicValue(index + 1);
+                temp.setHeuristicValue(index);
             } else {
                 temp.setHeuristicValue(curBestPathLength + 1);
             }
@@ -736,7 +736,7 @@ public class CoastGuard extends Search {
                 // find based on the index of this action if exists in the best path
                 int index = curBestPath.indexOf(action);
                 if (index != -1) {
-                    temp.setHeuristicValue(index + 1);
+                    temp.setHeuristicValue(index);
                 } else if (temp.getOperator().equals("pickup") || temp.getOperator().equals("drop") || temp.getOperator().equals("retrieve")) {
                     temp.setHeuristicValue(0);
                 } else {
