@@ -12,6 +12,8 @@ public abstract class Search {
     private ArrayList<State> queue = new ArrayList<State>();
     private String goalState;
 
+    private int numberNodesExpanded = 0;
+
     public Search() {
         this.operators = new String[] { "up", "down", "right", "left", "pickup","drop","retrieve" };
         this.initState = null;
@@ -48,6 +50,14 @@ public abstract class Search {
 
     public void setStateSpace(HashSet<State> stateSpace) {
         this.stateSpace = stateSpace;
+    }
+
+    public int getNumberNodesExpanded() {
+        return numberNodesExpanded;
+    }
+
+    public void setNumberNodesExpanded(int numberNodesExpanded) {
+        this.numberNodesExpanded = numberNodesExpanded;
     }
 
     public void setGoalState(String goalState) {

@@ -169,6 +169,7 @@ public class CoastGuard extends Search {
             }
             currentState.setOperator(nextOperator);
             State nextState = searchProblem.expand(currentState);
+            searchProblem.setNumberNodesExpanded(searchProblem.getNumberNodesExpanded() + 1);
             currentState = nextState;
             currentGrid = currentState.getGrid();
             searchProblem.getQueue().add(currentState);
@@ -182,6 +183,7 @@ public class CoastGuard extends Search {
         if (visualize) {
             System.out.println("Solution: " + solution);
         }
+        System.out.println("Number of nodes expanded: " + searchProblem.getNumberNodesExpanded());
         return solution;
     }
 
@@ -219,6 +221,7 @@ public class CoastGuard extends Search {
         }
         while (!currentGrid.checkGameOver()) {
             currentState = searchProblem.expand(searchProblem.getQueue().remove(0));
+            searchProblem.setNumberNodesExpanded(searchProblem.getNumberNodesExpanded() + 1);
             currentGrid = currentState.getGrid();
             actions = currentGrid.getPossibleActions();
             //get possible actions
@@ -235,6 +238,7 @@ public class CoastGuard extends Search {
             }
         }
         String solution = stringifyState(currentState);
+        System.out.println("Number of nodes expanded: " + searchProblem.getNumberNodesExpanded());
         return solution;
     }
 
@@ -297,6 +301,7 @@ public class CoastGuard extends Search {
                 currentState = searchProblem.expand(searchProblem.getQueue().remove(
                         searchProblem.getQueue().size() - 1)
                     );
+                searchProblem.setNumberNodesExpanded(searchProblem.getNumberNodesExpanded() + 1);
                 currentGrid = currentState.getGrid();
                 actions = currentGrid.getPossibleActions();
                 //get possible actions
@@ -318,6 +323,7 @@ public class CoastGuard extends Search {
             }
         }
         String solution = stringifyState(currentState);
+        System.out.println("Number of nodes expanded: " + searchProblem.getNumberNodesExpanded());
         return solution;
     }
 
@@ -389,6 +395,7 @@ public class CoastGuard extends Search {
             searchProblem.getQueue().clear();
             searchProblem.getStateSpace().clear();
             currentState = searchProblem.expand(currentState);
+            searchProblem.setNumberNodesExpanded(searchProblem.getNumberNodesExpanded() + 1);
             if (currentState.getPlan().size() == 50) {
                 break;
             }
@@ -425,6 +432,7 @@ public class CoastGuard extends Search {
         }
 
         String solution = stringifyState(currentState);
+        System.out.println("Number of nodes expanded: " + searchProblem.getNumberNodesExpanded());
         return solution;
 
 
@@ -499,6 +507,7 @@ public class CoastGuard extends Search {
             searchProblem.getQueue().clear();
             searchProblem.getStateSpace().clear();
             currentState = searchProblem.expand(currentState);
+            searchProblem.setNumberNodesExpanded(searchProblem.getNumberNodesExpanded() + 1);
 
             currentGrid = currentState.getGrid();
 
@@ -534,6 +543,7 @@ public class CoastGuard extends Search {
         }
 
         String solution = stringifyState(currentState);
+        System.out.println("Number of nodes expanded: " + searchProblem.getNumberNodesExpanded());
         return solution;
 
     }
@@ -617,6 +627,7 @@ public class CoastGuard extends Search {
             searchProblem.getQueue().clear();
             searchProblem.getStateSpace().clear();
             currentState = searchProblem.expand(currentState);
+            searchProblem.setNumberNodesExpanded(searchProblem.getNumberNodesExpanded() + 1);
             currentGrid = currentState.getGrid();
 
             curBestPath = new ArrayList<String>();
@@ -717,6 +728,7 @@ public class CoastGuard extends Search {
             searchProblem.getQueue().clear();
             searchProblem.getStateSpace().clear();
             currentState = searchProblem.expand(currentState);
+            searchProblem.setNumberNodesExpanded(searchProblem.getNumberNodesExpanded() + 1);
             if (currentState.getPlan().size() == 50) {
                 break;
             }
@@ -753,6 +765,7 @@ public class CoastGuard extends Search {
         }
 
         String solution = stringifyState(currentState);
+        System.out.println("Number of nodes expanded: " + searchProblem.getNumberNodesExpanded());
         return solution;
 
     }
